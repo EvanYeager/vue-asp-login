@@ -1,3 +1,4 @@
+using asp_login.Models;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
@@ -11,19 +12,27 @@ public class AuthController: ControllerBase
         // check if password matches
         // manage sign in cookies
         // return Ok();
-        bool userExists = model.Username == "evan";
+        Credentials credentials = new Credentials();
+        bool userExists = credentials.Users.ContainsKey(model.Username) && credentials.Users[model.Username] == model.Password;
         if (!userExists)
         {
             return StatusCode(StatusCodes.Status401Unauthorized);
         }
-        return Ok();
+
+        SessionModel session = new SessionModel(model.Username, new string[] { "coord1", "coord2" });
+        HttpContext.Session.SetObject("test session", session);
+
+        SessionService.AddSession(session);
+
+        return Ok(session);
     }
 
     [HttpPost("logout")]
     public async Task<IActionResult> Logout()
     {
         // manage sign out cookies
-        return Ok();
+        String body = "logging out user " + HttpContext.Session.GetString("username") + "\n" + HttpContext.Session.GetString("test session");
+        return Ok(body);
     }
 
     [HttpGet("test")]
