@@ -9,5 +9,4 @@ public class Credentials
         {"admin", "admin"},
         {"evan", "password"}
     };
-    public Credentials(){}
 }

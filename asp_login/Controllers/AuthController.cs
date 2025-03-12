@@ -5,33 +5,38 @@ using Microsoft.AspNetCore.Mvc;
 [Route("api/[controller]")]
 public class AuthController: ControllerBase
 {
+
+    public LoginController LoginController;
+
+    public AuthController() : base()
+    {
+        LoginController = new LoginController();
+    }
+
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginModel model)
     {
-        // search up user by username
-        // check if password matches
-        // manage sign in cookies
-        // return Ok();
-        Credentials credentials = new Credentials();
-        bool userExists = credentials.Users.ContainsKey(model.Username) && credentials.Users[model.Username] == model.Password;
+        bool userExists = LoginController.CredentialsMatch(model);
         if (!userExists)
         {
             return StatusCode(StatusCodes.Status401Unauthorized);
         }
 
-        SessionModel session = new SessionModel(model.Username, new string[] { "coord1", "coord2" });
-        HttpContext.Session.SetObject("test session", session);
+        string? uid = LoginController.Login(model);
 
-        SessionService.AddSession(session);
-
-        return Ok(session);
+        return Ok(uid);
     }
 
     [HttpPost("logout")]
-    public async Task<IActionResult> Logout()
+    public async Task<IActionResult> Logout([FromBody] string uid)
     {
-        // manage sign out cookies
-        String body = "logging out user " + HttpContext.Session.GetString("username") + "\n" + HttpContext.Session.GetString("test session");
+        if (!SessionTracker.Sessions.ContainsKey(uid))
+        {
+            return StatusCode(StatusCodes.Status304NotModified);
+        }
+
+        string body = SessionTracker.Sessions[uid].Username + " is now logged out.";
+        LoginController.Logout(uid);
         return Ok(body);
     }
 
