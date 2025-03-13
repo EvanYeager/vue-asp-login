@@ -5,24 +5,20 @@ import cookies from 'vue-cookies';
 const $cookies = cookies as unknown as VueCookiesType;
 
 export default class LoginService {
+    private sessionKeyName = "loginSessionToken";
+
     constructor() {}
     
     isLoggedIn(): boolean {
-        if ($cookies.isKey("loginSessionToken")) {
-            console.log('is logged in')
-            return true
-        }
-        else {
-            console.log('not logged in')
-            return false
-        }
-        // return $cookies.isKey("loginSessionToken")
+        return $cookies.isKey(this.sessionKeyName)
     }
 
     saveLoginSession(token: string) {
-        $cookies.set("loginSessionToken", token, "5h");
+        $cookies.set(this.sessionKeyName, token, "5h");
     }
-    // functions: {
-    // }
+
+    removeLoginSession() {
+        $cookies.remove(this.sessionKeyName);
+    }
 }
 </script>
