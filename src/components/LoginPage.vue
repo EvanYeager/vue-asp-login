@@ -1,7 +1,9 @@
 <script>
+import LoginService from '@/services/LoginService.vue';
+
 export default {
     mounted() {
-        this.$cookies.set("testkey", "testvalue");
+        this.$cookies.set("loginSessionToken", "testtesttest");
     }
 }
 </script>
