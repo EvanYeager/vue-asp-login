@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import LocationService from '@/services/LocationService.vue';
 
-let locations = ref(["College Park", "Spring Hill"]);
+const locationService = LocationService.getInstance();
+let locations = ref(locationService.locations);
 
 // list of location html elements
 const listItems = ref<HTMLElement[]>([]);
@@ -33,7 +35,7 @@ const handleMouseLeave = (index: number): void => {
 };
 
 const removeLocation = (index: number): void => {
-    locations.value = locations.value.filter((_, i) => i !== index);
+    locationService.removeLocation(locations.value[index]);
 }
 
 
