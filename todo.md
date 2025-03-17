@@ -1,4 +1,5 @@
 todo
-- vue form for login page
-- client login session
-- weather api
+- login page
+- login cookies
+- location cookies
+  - listening to update event

@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import LocationService from '@/services/LocationService.vue';
+import eventBus from '@/eventBus';
 
 const locationService = LocationService.getInstance();
 let locations = ref(locationService.locations);
 
 // list of location html elements
 const listItems = ref<HTMLElement[]>([]);
+
+const input = ref();
 
 const handleMouseMove = (event: MouseEvent, index: number): void => {
   const item = listItems.value[index];
@@ -36,6 +39,15 @@ const handleMouseLeave = (index: number): void => {
 
 const removeLocation = (index: number): void => {
     locationService.removeLocation(locations.value[index]);
+    eventBus.emit('locationUpdated');
+}
+
+const addLocation = (): void => {
+    if (input.value) {
+        locationService.addLocation(input.value);
+        input.value = '';
+        eventBus.emit('locationUpdated');
+    }
 }
 
 
@@ -45,6 +57,7 @@ const removeLocation = (index: number): void => {
     
     <h2 v-if="locations.length > 0">Your Locations</h2>
     <h2 v-else>Add a location to get started!</h2>
+    <input v-model="input" @keyup.enter="addLocation" placeholder="Add a new location...">
     <ul>
         <li v-for="(location, index) in locations"
             :key="index"

@@ -1,8 +1,9 @@
 <script setup lang="ts">
+import eventBus from '@/eventBus';
 import WeatherModel from '@/models/WeatherModel.vue';
 import LocationService from '@/services/LocationService.vue';
 import WeatherService from '@/services/WeatherService.vue';
-import { ref } from 'vue';
+import { onMounted, onUnmounted, ref } from 'vue';
 
 const locationService: LocationService = LocationService.getInstance();
 const activeLocation = locationService.getActiveLocation;
@@ -10,20 +11,35 @@ const weatherService = new WeatherService;
 
 let forecast = ref();
 
+const getWeather = () => {
+  console.log('Getting weather for', activeLocation.value);
+  weatherService.getWeatherForecast(activeLocation.value!)
+  .then(result => {
+    forecast.value = result;
+  })
+  .catch(error => {
+    console.error('Error fetching forecast:', error);
+  });
+}
+
 if (activeLocation.value) {
-  weatherService.getWeatherForecast(activeLocation.value)
-    .then(result => {
-      forecast.value = result;
-    })
-    .catch(error => {
-      console.error('Error fetching forecast:', error);
-    });
-    }
-  </script>
+  getWeather();
+}
+
+
+onMounted(() => {
+  eventBus.on('locationUpdated', getWeather);
+});
+
+onUnmounted(() => {
+  eventBus.off('locationUpdated', getWeather);
+})
+
+</script>
 
   <template>
     <h1 v-if="activeLocation !== null">Weather for {{ activeLocation }}</h1>
-    <div v-if="forecast" id="weather-container">
+    <div v-if="forecast && forecast.name" id="weather-container">
       <div class="text-container">
         <h3>{{ forecast.name }}</h3>
         <p>{{ forecast.forecastDescription }}</p>
@@ -33,6 +49,7 @@ if (activeLocation.value) {
       <img class="image" v-if="forecast.isDaytime" src="../assets/sun.svg">
       <img class="image" v-else src="../assets/moon.svg">
     </div>
+    <h3 v-else>Weather data could not be found for this location. Make sure the format is [street address], [city], [state].</h3>
   </template>
 
   <style>

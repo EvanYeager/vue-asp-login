@@ -14,9 +14,12 @@ export default class WeatherService {
         console.log(response.data.properties.forecast);
     }
 
-    async getWeatherForecast(location: string): Promise<WeatherModel> {
+    async getWeatherForecast(location: string): Promise<WeatherModel | undefined> {
         // get coords for location
         const coords = await this.getCoords(location);
+        if (!coords)
+            return undefined;
+
         const x = coords.y; // i have no clue why the coords need to be swapped like this
         const y = coords.x;
 
@@ -29,9 +32,6 @@ export default class WeatherService {
         const out = new WeatherModel(weatherPeriod.name, weatherPeriod.isDaytime, weatherPeriod.temperature, weatherPeriod.temperatureUnit, weatherPeriod.shortForecast);
 
         return out;
-
-
-        // return response;
     }
 
     async getCoords(location: string) {
@@ -43,6 +43,7 @@ export default class WeatherService {
         }
         catch (error) {
             console.error("Unable to find coordinates in WeatherService.vue. Error message: " + error);
+            return null;
         }
         
     }
