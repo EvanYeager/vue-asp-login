@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import eventBus from '@/eventBus';
-import WeatherModel from '@/models/WeatherModel.vue';
 import LocationService from '@/services/LocationService.vue';
 import WeatherService from '@/services/WeatherService.vue';
 import { onMounted, onUnmounted, ref } from 'vue';

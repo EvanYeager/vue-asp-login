@@ -50,6 +50,13 @@ const addLocation = (): void => {
     }
 }
 
+const selectLocation = (index: number): void => {
+    const elem = locations.value[index];
+    locationService.removeLocation(elem);
+    locationService.locations.value.unshift(elem);
+    eventBus.emit('locationUpdated');
+}
+
 
 </script>
 <template>
@@ -63,7 +70,8 @@ const addLocation = (): void => {
             :key="index"
             ref="listItems"
             @mousemove="handleMouseMove($event, index)"
-            @mouseleave="handleMouseLeave(index)">
+            @mouseleave="handleMouseLeave(index)"
+            @click="selectLocation(index)">
             {{ location }}
             <span class="close-btn" @click.stop="removeLocation(index)">×</span>
         </li>
@@ -98,6 +106,12 @@ const addLocation = (): void => {
         cursor: pointer;
         position: relative;
         transition: transform 0.3s ease;
+    }
+
+    li:first-child {
+        background-color: rgba(0, 0, 0, .4);
+        box-shadow: 0 0 12px rgba(0, 0, 0, .6);
+        margin-top: 30px;
     }
 
     .close-btn {
