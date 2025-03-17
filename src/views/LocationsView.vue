@@ -75,7 +75,7 @@ const removeLocation = (index: number): void => {
     li {
         text-decoration: none;
         list-style: none;
-        padding: 10px;
+        padding: 10px 30px;
         margin: 10px;
         min-width: 200px;
         font-size: 15px;

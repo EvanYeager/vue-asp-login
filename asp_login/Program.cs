@@ -5,6 +5,18 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddDistributedMemoryCache();
 
+builder.Services.AddHttpClient();
+
+builder.Services.AddCors(options => 
+{
+    options.AddPolicy("VueAppPolicy", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173") // Your Vue app's development URL
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 builder.Services.AddSession(options => 
 {
     options.IdleTimeout = TimeSpan.FromMinutes(30);
@@ -39,5 +51,17 @@ app.MapControllerRoute(
     name: "auth",
     pattern: "api/{controller}/{action}"
 );
+
+app.MapControllerRoute(
+    name: "geocoding",
+    pattern: "api/{controller}"
+);
+
+app.UseCors(policy =>
+{
+    policy.WithOrigins("http://localhost:5173")
+          .AllowAnyHeader()
+          .AllowAnyMethod();
+});
 
 app.Run();

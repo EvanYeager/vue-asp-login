@@ -1,24 +1,26 @@
 <script lang="ts">
 import type { VueCookies as VueCookiesType } from 'vue-cookies';
 import cookies from 'vue-cookies';
+import CookieService from './CookieService.vue';
 
 const $cookies = cookies as unknown as VueCookiesType;
 
 export default class LoginService {
     private sessionKeyName = "loginSessionToken";
+    private cookieService = new CookieService();
 
     constructor() {}
     
     isLoggedIn(): boolean {
-        return $cookies.isKey(this.sessionKeyName)
+        return this.cookieService.$cookies.isKey(this.sessionKeyName);
     }
 
     saveLoginSession(token: string) {
-        $cookies.set(this.sessionKeyName, token, "5h");
+        this.cookieService.addCookie(this.sessionKeyName, token);
     }
 
     removeLoginSession() {
-        $cookies.remove(this.sessionKeyName);
+        this.cookieService.removeCookie(this.sessionKeyName);
     }
 }
 </script>
