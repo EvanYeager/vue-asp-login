@@ -8,7 +8,13 @@ export default class LocationService {
     private static instance: LocationService;
     private cookieService = new CookieService();
 
-    private constructor() {}
+    private constructor() {
+        if (this.cookieService.$cookies.isKey("locations")) {
+            const locationCookie = this.cookieService.$cookies.get("locations");
+            if (locationCookie)
+                this.locations.value = locationCookie;
+        }
+    }
 
     public static getInstance(): LocationService {
         if (!LocationService.instance)
@@ -16,11 +22,7 @@ export default class LocationService {
         return LocationService.instance;
     }
 
-    locations = ref<string[]>([
-        "7312 Baltimore Ave, College Park, MD",
-        "1128 Claire Dr, Spring Hill, TN",
-        "1055 4th St, Santa Rosa, CA",
-    ]);
+    locations = ref<string[]>([]);
 
     private activeLocation: string | null = this.locations.value[0];
 
@@ -55,8 +57,19 @@ export default class LocationService {
         this.updateLocationCookies();
     }
 
+    moveLocationToTop(index: number): void {
+        if (index >= 0 && index < this.locations.value.length) {
+            const location = this.locations.value[index];
+            this.locations.value.splice(index, 1);
+            this.locations.value.unshift(location);
+        }
+
+        this.updateLocationCookies();
+    }
+
 
     private updateLocationCookies() {
+        console.log('updating location cookies. ', JSON.stringify(this.locations.value));
         this.cookieService.removeCookie("locations");
         this.cookieService.addCookie("locations", JSON.stringify(this.locations.value));
     }

@@ -51,9 +51,8 @@ const addLocation = (): void => {
 }
 
 const selectLocation = (index: number): void => {
-    const elem = locations.value[index];
-    locationService.removeLocation(elem);
-    locationService.locations.value.unshift(elem);
+    locationService.moveLocationToTop(index);
+    console.log("locations array is now: " + locationService.locations.value);
     eventBus.emit('locationUpdated');
 }
 
