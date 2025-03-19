@@ -30,6 +30,10 @@ export default class LoginService {
             return false;
         }
     }
+
+    logout() {
+        this.removeLoginSession();
+    }
     
     isLoggedIn(): boolean {
         return this.cookieService.$cookies.isKey(this.sessionKeyName);
