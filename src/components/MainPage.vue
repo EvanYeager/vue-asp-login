@@ -27,7 +27,7 @@ import WeatherView from '@/views/WeatherView.vue';
 }
 
 #right {
-    flex-grow: 1;
+    min-width: 500px;
 }
 
 .logo {
