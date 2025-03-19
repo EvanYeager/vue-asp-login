@@ -1,13 +1,8 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import LocationsView from './views/LocationsView.vue'
+import { RouterView } from 'vue-router'
 </script>
 
 <template>
-  <header>
-    <LocationsView></LocationsView>
-  </header>
-
   <main>
     <RouterView />
   </main>
