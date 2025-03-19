@@ -2,8 +2,8 @@
 import LoginService from '@/services/LoginService.vue';
 
 const loginService = new LoginService();
-const username: string = "";
-const password: string = "";
+let username: string = "";
+let password: string = "";
 
 let failure: boolean = false;
 
